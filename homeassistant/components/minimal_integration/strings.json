@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "New Minimal Integration Sensor",
+        "data": {
+          "entity_id": "Input sensor",
+          "name": "Name"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "entity_id": "[%key:component::minimal_integration::config::step::user::description%]"
+        }
+      }
+    }
+  }
+}
