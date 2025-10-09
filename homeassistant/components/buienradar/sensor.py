@@ -59,6 +59,7 @@ from .const import (
     ICON_WEATHER_PARTLY_CLOUDY,
     ICON_WEATHER_POURING,
     ICON_WEATHER_WINDY,
+    LOG_NO_FORECAST,
     STATE_CONDITION_CODES,
     STATE_CONDITIONS,
     STATE_DETAILED_CONDITIONS,
@@ -911,7 +912,7 @@ class BrSensor(SensorEntity):
         """
         forecast = cast(list[dict[str, Any]], data.get(FORECAST) or [])
         if fcday >= len(forecast):
-            _LOGGER.warning("No forecast for fcday=%s", fcday)
+            _LOGGER.warning(LOG_NO_FORECAST, fcday)
             return False
 
         condition = forecast[fcday].get(CONDITION)
@@ -941,7 +942,7 @@ class BrSensor(SensorEntity):
         """
         forecast = cast(list[dict[str, Any]], data.get(FORECAST) or [])
         if fcday >= len(forecast):
-            _LOGGER.warning("No forecast for fcday=%s", fcday)
+            _LOGGER.warning(LOG_NO_FORECAST, fcday)
             return False
 
         value_ms = forecast[fcday].get(sensor_type[:-3])
@@ -966,7 +967,7 @@ class BrSensor(SensorEntity):
         """
         forecast = cast(list[dict[str, Any]], data.get(FORECAST) or [])
         if fcday >= len(forecast):
-            _LOGGER.warning("No forecast for fcday=%s", fcday)
+            _LOGGER.warning(LOG_NO_FORECAST, fcday)
             return False
 
         self._attr_native_value = forecast[fcday].get(sensor_type[:-3])
