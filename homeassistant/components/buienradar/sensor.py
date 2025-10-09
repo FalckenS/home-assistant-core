@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any, cast
 
 from buienradar.constants import (
     ATTRIBUTION,
@@ -52,6 +53,12 @@ from . import BuienRadarConfigEntry
 from .const import (
     CONF_TIMEFRAME,
     DEFAULT_TIMEFRAME,
+    # Constants used for refactoring
+    ICON_COMPASS_OUTLINE,
+    ICON_GAUGE,
+    ICON_WEATHER_PARTLY_CLOUDY,
+    ICON_WEATHER_POURING,
+    ICON_WEATHER_WINDY,
     STATE_CONDITION_CODES,
     STATE_CONDITIONS,
     STATE_DETAILED_CONDITIONS,
@@ -80,19 +87,19 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key="barometerfc",
         translation_key="barometerfc",
-        icon="mdi:gauge",
+        icon=ICON_GAUGE,
     ),
     # new in json api (>1.0.0):
     SensorEntityDescription(
         key="barometerfcname",
         translation_key="barometerfcname",
-        icon="mdi:gauge",
+        icon=ICON_GAUGE,
     ),
     # new in json api (>1.0.0):
     SensorEntityDescription(
         key="barometerfcnamenl",
         translation_key="barometerfcnamenl",
-        icon="mdi:gauge",
+        icon=ICON_GAUGE,
     ),
     SensorEntityDescription(
         key="condition",
@@ -157,12 +164,12 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
         key="windforce",
         translation_key="windforce",
         native_unit_of_measurement="Bft",
-        icon="mdi:weather-windy",
+        icon=ICON_WEATHER_WINDY,
     ),
     SensorEntityDescription(
         key="winddirection",
         translation_key="winddirection",
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
     ),
     SensorEntityDescription(
         key="windazimuth",
@@ -175,7 +182,7 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
         key="pressure",
         device_class=SensorDeviceClass.PRESSURE,
         native_unit_of_measurement=UnitOfPressure.HPA,
-        icon="mdi:gauge",
+        icon=ICON_GAUGE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     SensorEntityDescription(
@@ -385,91 +392,91 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
         key="rainchance_1d",
         translation_key="rainchance_1d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-pouring",
+        icon=ICON_WEATHER_POURING,
     ),
     SensorEntityDescription(
         key="rainchance_2d",
         translation_key="rainchance_2d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-pouring",
+        icon=ICON_WEATHER_POURING,
     ),
     SensorEntityDescription(
         key="rainchance_3d",
         translation_key="rainchance_3d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-pouring",
+        icon=ICON_WEATHER_POURING,
     ),
     SensorEntityDescription(
         key="rainchance_4d",
         translation_key="rainchance_4d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-pouring",
+        icon=ICON_WEATHER_POURING,
     ),
     SensorEntityDescription(
         key="rainchance_5d",
         translation_key="rainchance_5d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-pouring",
+        icon=ICON_WEATHER_POURING,
     ),
     SensorEntityDescription(
         key="sunchance_1d",
         translation_key="sunchance_1d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-partly-cloudy",
+        icon=ICON_WEATHER_PARTLY_CLOUDY,
     ),
     SensorEntityDescription(
         key="sunchance_2d",
         translation_key="sunchance_2d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-partly-cloudy",
+        icon=ICON_WEATHER_PARTLY_CLOUDY,
     ),
     SensorEntityDescription(
         key="sunchance_3d",
         translation_key="sunchance_3d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-partly-cloudy",
+        icon=ICON_WEATHER_PARTLY_CLOUDY,
     ),
     SensorEntityDescription(
         key="sunchance_4d",
         translation_key="sunchance_4d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-partly-cloudy",
+        icon=ICON_WEATHER_PARTLY_CLOUDY,
     ),
     SensorEntityDescription(
         key="sunchance_5d",
         translation_key="sunchance_5d",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:weather-partly-cloudy",
+        icon=ICON_WEATHER_PARTLY_CLOUDY,
     ),
     SensorEntityDescription(
         key="windforce_1d",
         translation_key="windforce_1d",
         native_unit_of_measurement="Bft",
-        icon="mdi:weather-windy",
+        icon=ICON_WEATHER_WINDY,
     ),
     SensorEntityDescription(
         key="windforce_2d",
         translation_key="windforce_2d",
         native_unit_of_measurement="Bft",
-        icon="mdi:weather-windy",
+        icon=ICON_WEATHER_WINDY,
     ),
     SensorEntityDescription(
         key="windforce_3d",
         translation_key="windforce_3d",
         native_unit_of_measurement="Bft",
-        icon="mdi:weather-windy",
+        icon=ICON_WEATHER_WINDY,
     ),
     SensorEntityDescription(
         key="windforce_4d",
         translation_key="windforce_4d",
         native_unit_of_measurement="Bft",
-        icon="mdi:weather-windy",
+        icon=ICON_WEATHER_WINDY,
     ),
     SensorEntityDescription(
         key="windforce_5d",
         translation_key="windforce_5d",
         native_unit_of_measurement="Bft",
-        icon="mdi:weather-windy",
+        icon=ICON_WEATHER_WINDY,
     ),
     SensorEntityDescription(
         key="windspeed_1d",
@@ -504,61 +511,61 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key="winddirection_1d",
         translation_key="winddirection_1d",
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
     ),
     SensorEntityDescription(
         key="winddirection_2d",
         translation_key="winddirection_2d",
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
     ),
     SensorEntityDescription(
         key="winddirection_3d",
         translation_key="winddirection_3d",
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
     ),
     SensorEntityDescription(
         key="winddirection_4d",
         translation_key="winddirection_4d",
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
     ),
     SensorEntityDescription(
         key="winddirection_5d",
         translation_key="winddirection_5d",
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
     ),
     SensorEntityDescription(
         key="windazimuth_1d",
         translation_key="windazimuth_1d",
         native_unit_of_measurement=DEGREE,
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
         device_class=SensorDeviceClass.WIND_DIRECTION,
     ),
     SensorEntityDescription(
         key="windazimuth_2d",
         translation_key="windazimuth_2d",
         native_unit_of_measurement=DEGREE,
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
         device_class=SensorDeviceClass.WIND_DIRECTION,
     ),
     SensorEntityDescription(
         key="windazimuth_3d",
         translation_key="windazimuth_3d",
         native_unit_of_measurement=DEGREE,
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
         device_class=SensorDeviceClass.WIND_DIRECTION,
     ),
     SensorEntityDescription(
         key="windazimuth_4d",
         translation_key="windazimuth_4d",
         native_unit_of_measurement=DEGREE,
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
         device_class=SensorDeviceClass.WIND_DIRECTION,
     ),
     SensorEntityDescription(
         key="windazimuth_5d",
         translation_key="windazimuth_5d",
         native_unit_of_measurement=DEGREE,
-        icon="mdi:compass-outline",
+        icon=ICON_COMPASS_OUTLINE,
         device_class=SensorDeviceClass.WIND_DIRECTION,
     ),
     SensorEntityDescription(
@@ -784,142 +791,290 @@ class BrSensor(SensorEntity):
             self.async_write_ha_state()
 
     @callback
-    def _load_data(self, data):  # noqa: C901
-        """Load the sensor with relevant data."""
-        # Check if we have a new measurement,
-        # otherwise we do not have to update the sensor
-        if self._measured == data.get(MEASURED):
+    def _load_data(self, data):
+        """Load the sensor with relevant data -- refactored!"""
+        if not self._has_new_measurement(data):
             return False
 
-        self._measured = data.get(MEASURED)
         sensor_type = self.entity_description.key
 
-        if sensor_type.endswith(("_1d", "_2d", "_3d", "_4d", "_5d")):
-            # update forecasting sensors:
-            fcday = 0
-            if sensor_type.endswith("_2d"):
-                fcday = 1
-            if sensor_type.endswith("_3d"):
-                fcday = 2
-            if sensor_type.endswith("_4d"):
-                fcday = 3
-            if sensor_type.endswith("_5d"):
-                fcday = 4
-
-            # update weather symbol & status text
-            if sensor_type.startswith((SYMBOL, CONDITION)):
-                try:
-                    condition = data.get(FORECAST)[fcday].get(CONDITION)
-                except IndexError:
-                    _LOGGER.warning("No forecast for fcday=%s", fcday)
-                    return False
-
-                if condition:
-                    new_state = condition.get(CONDITION)
-                    if sensor_type.startswith(SYMBOL):
-                        new_state = condition.get(EXACTNL)
-                    if sensor_type.startswith("conditioncode"):
-                        new_state = condition.get(CONDCODE)
-                    if sensor_type.startswith("conditiondetailed"):
-                        new_state = condition.get(DETAILED)
-                    if sensor_type.startswith("conditionexact"):
-                        new_state = condition.get(EXACT)
-
-                    img = condition.get(IMAGE)
-
-                    if new_state != self.state or img != self.entity_picture:
-                        self._attr_native_value = new_state
-                        self._attr_entity_picture = img
-                        return True
-                return False
-
+        # Forecast sensors: *_1d .. *_5d
+        if self._is_forecast_sensor(sensor_type):
+            fcday = self._forecast_day_index(sensor_type)
+            if self._is_condition_sensor(sensor_type):
+                return self._update_forecast_condition(sensor_type, data, fcday)
             if sensor_type.startswith(WINDSPEED):
-                # hass wants windspeeds in km/h not m/s, so convert:
-                try:
-                    self._attr_native_value = data.get(FORECAST)[fcday].get(
-                        sensor_type[:-3]
-                    )
-                except IndexError:
-                    _LOGGER.warning("No forecast for fcday=%s", fcday)
-                    return False
+                return self._update_forecast_windspeed(data, fcday, sensor_type)
+            return self._update_forecast_generic(data, fcday, sensor_type)
 
-                if self.state is not None:
-                    self._attr_native_value = round(self.state * 3.6, 1)
-                return True
+        # Current (non-forecast) condition & symbol
+        if self._is_current_condition_sensor(sensor_type):
+            return self._update_current_condition(sensor_type, data)
 
-            # update all other sensors
-            try:
-                self._attr_native_value = data.get(FORECAST)[fcday].get(
-                    sensor_type[:-3]
-                )
-            except IndexError:
-                _LOGGER.warning("No forecast for fcday=%s", fcday)
-                return False
-            return True
+        # Nested precipitation forecast block
+        if sensor_type.startswith(PRECIPITATION_FORECAST):
+            return self._update_precipitation_forecast_nested(sensor_type, data)
 
-        if sensor_type == SYMBOL or sensor_type.startswith(CONDITION):
-            # update weather symbol & status text
-            if condition := data.get(CONDITION):
-                if sensor_type == SYMBOL:
-                    new_state = condition.get(EXACTNL)
-                if sensor_type == CONDITION:
-                    new_state = condition.get(CONDITION)
-                if sensor_type == "conditioncode":
-                    new_state = condition.get(CONDCODE)
-                if sensor_type == "conditiondetailed":
-                    new_state = condition.get(DETAILED)
-                if sensor_type == "conditionexact":
-                    new_state = condition.get(EXACT)
+        # Wind conversions (current)
+        if sensor_type in (WINDSPEED, WINDGUST):
+            return self._update_current_wind(sensor_type, data)
 
-                img = condition.get(IMAGE)
+        # Visibility conversion (current)
+        if sensor_type == VISIBILITY:
+            return self._update_visibility(data)
 
-                if new_state != self.state or img != self.entity_picture:
-                    self._attr_native_value = new_state
-                    self._attr_entity_picture = img
-                    return True
+        # Generic path + common attributes
+        return self._update_generic_and_attrs(sensor_type, data)
 
+    # -----------------------------
+    # Helper methods for _load_data
+    # -----------------------------
+
+    def _has_new_measurement(self, data) -> bool:
+        """Check if 'MEASURED' changed; store it.
+
+        Args:
+            data: Raw Buienradar payload.
+
+        Returns:
+            True if measurement timestamp differs from previous (and is saved), else False.
+        """
+        measured = data.get(MEASURED)
+        if self._measured == measured:
+            return False
+        self._measured = measured
+        return True
+
+    def _is_forecast_sensor(self, sensor_type: str) -> bool:
+        """Return True if sensor key ends with a day suffix (_1d.._5d)."""
+        return sensor_type.endswith(("_1d", "_2d", "_3d", "_4d", "_5d"))
+
+    def _forecast_day_index(self, sensor_type: str) -> int:
+        """Map *_Xd suffix to forecast day index (0..4).
+
+        Args:
+            sensor_type: Entity key (e.g 'temp_3d').
+
+        Returns:
+            Integer day offset: 0 for _1d (today), 1 for _2d, ... 4 for _5d.
+        """
+        if sensor_type.endswith("_2d"):
+            return 1
+        if sensor_type.endswith("_3d"):
+            return 2
+        if sensor_type.endswith("_4d"):
+            return 3
+        if sensor_type.endswith("_5d"):
+            return 4
+        return 0
+
+    def _is_condition_sensor(self, sensor_type: str) -> bool:
+        """Return True if sensor represents a weather condition/symbol variant."""
+        return sensor_type.startswith(
+            (SYMBOL, CONDITION, "conditioncode", "conditiondetailed", "conditionexact")
+        )
+
+    def _extract_condition_field(self, sensor_type: str, condition: dict):
+        """Select the appropriate condition field for this sensor.
+
+        Args:
+            sensor_type: Condition-like sensor key.
+            condition: Condition dict from payload.
+
+        Returns:
+            The string value (e.g exactnl/condcode/detailed/exact) or None.
+        """
+        if sensor_type.startswith(SYMBOL):
+            return condition.get(EXACTNL)
+        if sensor_type == CONDITION or sensor_type.startswith(CONDITION):
+            return condition.get(CONDITION)
+        if sensor_type.startswith("conditioncode"):
+            return condition.get(CONDCODE)
+        if sensor_type.startswith("conditiondetailed"):
+            return condition.get(DETAILED)
+        if sensor_type.startswith("conditionexact"):
+            return condition.get(EXACT)
+        return None
+
+    def _update_forecast_condition(
+        self, sensor_type: str, data: dict, fcday: int
+    ) -> bool:
+        """Update forecasted condition (state + image) for a given day.
+
+        Args:
+            sensor_type: Condition-like forecast sensor key.
+            data: Raw Buienradar payload.
+            fcday: Forecast day index (0..4).
+
+        Returns:
+            True if state or image changed and were updated; otherwise False.
+        """
+        forecast = cast(list[dict[str, Any]], data.get(FORECAST) or [])
+        if fcday >= len(forecast):
+            _LOGGER.warning("No forecast for fcday=%s", fcday)
             return False
 
-        if sensor_type.startswith(PRECIPITATION_FORECAST):
-            # update nested precipitation forecast sensors
-            nested = data.get(PRECIPITATION_FORECAST)
-            self._timeframe = nested.get(TIMEFRAME)
-            self._attr_native_value = nested.get(
-                sensor_type[len(PRECIPITATION_FORECAST) + 1 :]
-            )
-            return True
+        condition = forecast[fcday].get(CONDITION)
+        if not condition:
+            return False
 
-        if sensor_type in [WINDSPEED, WINDGUST]:
-            # hass wants windspeeds in km/h not m/s, so convert:
-            self._attr_native_value = data.get(sensor_type)
-            if self.state is not None:
-                self._attr_native_value = round(data.get(sensor_type) * 3.6, 1)
+        new_state = self._extract_condition_field(sensor_type, condition)
+        img = condition.get(IMAGE)
+        if new_state != self.state or img != self.entity_picture:
+            self._attr_native_value = new_state
+            self._attr_entity_picture = img
             return True
+        return False
 
-        if sensor_type == VISIBILITY:
-            # hass wants visibility in km (not m), so convert:
-            self._attr_native_value = data.get(sensor_type)
-            if self.state is not None:
-                self._attr_native_value = round(self.state / 1000, 1)
+    def _update_forecast_windspeed(
+        self, data: dict, fcday: int, sensor_type: str
+    ) -> bool:
+        """Update forecast windspeed: read m/s and store km/h.
+
+        Args:
+            data: Raw Buienradar payload.
+            fcday: Forecast day index (0..4).
+            sensor_type: Windspeed key with day suffix (e.g 'wind_speed_2d').
+
+        Returns:
+            True if value was set; False if missing/unavailable.
+        """
+        forecast = cast(list[dict[str, Any]], data.get(FORECAST) or [])
+        if fcday >= len(forecast):
+            _LOGGER.warning("No forecast for fcday=%s", fcday)
+            return False
+
+        value_ms = forecast[fcday].get(sensor_type[:-3])
+        if value_ms is None:
+            return False
+
+        self._attr_native_value = round(float(value_ms) * 3.6, 1)
+        return True
+
+    def _update_forecast_generic(
+        self, data: dict, fcday: int, sensor_type: str
+    ) -> bool:
+        """Update generic forecast value for a given day (non-wind, non-condition).
+
+        Args:
+            data: Raw Buienradar payload.
+            fcday: Forecast day index (0..4).
+            sensor_type: Sensor key with day suffix.
+
+        Returns:
+            True if value was set; False if forecast missing.
+        """
+        forecast = cast(list[dict[str, Any]], data.get(FORECAST) or [])
+        if fcday >= len(forecast):
+            _LOGGER.warning("No forecast for fcday=%s", fcday)
+            return False
+
+        self._attr_native_value = forecast[fcday].get(sensor_type[:-3])
+        return True
+
+    def _is_current_condition_sensor(self, sensor_type: str) -> bool:
+        """Return True if this is a non-forecast condition/symbol variant."""
+        return (
+            sensor_type == SYMBOL
+            or sensor_type.startswith(CONDITION)
+            or sensor_type in ("conditioncode", "conditiondetailed", "conditionexact")
+        )
+
+    def _update_current_condition(self, sensor_type: str, data: dict) -> bool:
+        """Update current condition (state + image).
+
+        Args:
+            sensor_type: Condition-like sensor key.
+            data: Raw Buienradar payload.
+
+        Returns:
+            True if state or image changed and were updated; otherwise False.
+        """
+        condition = data.get(CONDITION)
+        if not condition:
+            return False
+
+        new_state = self._extract_condition_field(sensor_type, condition)
+        img = condition.get(IMAGE)
+        if new_state != self.state or img != self.entity_picture:
+            self._attr_native_value = new_state
+            self._attr_entity_picture = img
             return True
+        return False
 
-        # update all other sensors
+    def _update_precipitation_forecast_nested(
+        self, sensor_type: str, data: dict
+    ) -> bool:
+        """Update nested precipitation-forecast value and related attributes.
+
+        Args:
+            sensor_type: Key under 'precipitation_forecast.*'.
+            data: Raw Buienradar payload.
+
+        Returns:
+            True always after setting value and attributes.
+        """
+        nested = data.get(PRECIPITATION_FORECAST) or {}
+        self._timeframe = nested.get(TIMEFRAME)
+        key = sensor_type[len(PRECIPITATION_FORECAST) + 1 :]
+        self._attr_native_value = nested.get(key)
+
+        attrs = {ATTR_ATTRIBUTION: data.get(ATTRIBUTION)}
+        if self._timeframe is not None:
+            attrs[TIMEFRAME_LABEL] = f"{self._timeframe} min"
+        self._attr_extra_state_attributes = attrs
+        return True
+
+    def _update_current_wind(self, sensor_type: str, data: dict) -> bool:
+        """Update current windspeed/gust: read m/s and store km/h.
+
+        Args:
+            sensor_type: WINDSPEED or WINDGUST.
+            data: Raw Buienradar payload.
+
+        Returns:
+            True if value was set; False if missing.
+        """
+        value_ms = data.get(sensor_type)
+        if value_ms is None:
+            return False
+        self._attr_native_value = round(value_ms * 3.6, 1)
+        return True
+
+    def _update_visibility(self, data: dict) -> bool:
+        """Update visibility: meters → kilometers (1 decimal).
+
+        Args:
+            data: Raw Buienradar payload.
+
+        Returns:
+            True if value was set; False if missing.
+        """
+        value_m = data.get(VISIBILITY)
+        if value_m is None:
+            return False
+        self._attr_native_value = round(value_m / 1000, 1)
+        return True
+
+    def _update_generic_and_attrs(self, sensor_type: str, data: dict) -> bool:
+        """Set generic value and common attributes (attribution, station, measured).
+
+        Args:
+            sensor_type: Entity key to read from data.
+            data: Raw Buienradar payload.
+
+        Returns:
+            True after updating value and attributes.
+        """
         self._attr_native_value = data.get(sensor_type)
-        if sensor_type.startswith(PRECIPITATION_FORECAST):
-            result = {ATTR_ATTRIBUTION: data.get(ATTRIBUTION)}
-            if self._timeframe is not None:
-                result[TIMEFRAME_LABEL] = f"{self._timeframe} min"
 
-            self._attr_extra_state_attributes = result
-
-        result = {
+        attrs = {
             ATTR_ATTRIBUTION: data.get(ATTRIBUTION),
             STATIONNAME_LABEL: data.get(STATIONNAME),
         }
         if self._measured is not None:
-            # convert datetime (Europe/Amsterdam) into local datetime
             local_dt = dt_util.as_local(self._measured)
-            result[MEASURED_LABEL] = local_dt.strftime("%c")
+            attrs[MEASURED_LABEL] = local_dt.strftime("%c")
 
-        self._attr_extra_state_attributes = result
+        self._attr_extra_state_attributes = attrs
         return True

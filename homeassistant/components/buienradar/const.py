@@ -64,3 +64,15 @@ STATE_CONDITION_CODES = [
     "g",
     "s",
 ]
+
+# ------------------------------------------------
+# Refactoring for literals - use constants instead
+# ------------------------------------------------
+
+ICON_GAUGE = "mdi:gauge"
+ICON_WEATHER_WINDY = "mdi:weather-windy"
+ICON_COMPASS_OUTLINE = "mdi:compass-outline"
+ICON_WEATHER_POURING = "mdi:weather-pouring"
+ICON_WEATHER_PARTLY_CLOUDY = "mdi:weather-partly-cloudy"
+
+LOG_NO_FORECAST = "No forecast for fcday=%s"
