@@ -1,0 +1,7 @@
+{
+  "domain": "minimal_integration",
+  "name": "Minimal Integration",
+  "codeowners": ["@brylander"],
+  "documentation": "https://www.home-assistant.io/integrations/minimal_integration",
+  "iot_class": "local_polling"
+}
