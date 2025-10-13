@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 import voluptuous as vol
@@ -101,15 +102,24 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     config = config[DOMAIN]
 
-    intent.async_setup(hass)
+    try:
+        intent.async_setup(hass)
 
-    if flash_briefings_config := config.get(CONF_FLASH_BRIEFINGS):
-        flash_briefings.async_setup(hass, flash_briefings_config)
+        if flash_briefings_config := config.get(CONF_FLASH_BRIEFINGS):
+            flash_briefings.async_setup(hass, flash_briefings_config)
 
-    # smart_home being absent is not the same as smart_home being None
-    if CONF_SMART_HOME in config:
-        smart_home_config: dict[str, Any] | None = config[CONF_SMART_HOME]
-        smart_home_config = smart_home_config or SMART_HOME_SCHEMA({})
-        await smart_home.async_setup(hass, smart_home_config)
+        # smart_home being absent is not the same as smart_home being None
+        if CONF_SMART_HOME in config:
+            smart_home_config: dict[str, Any] | None = config[CONF_SMART_HOME]
+            smart_home_config = smart_home_config or SMART_HOME_SCHEMA({})
+            await smart_home.async_setup(hass, smart_home_config)
+
+    except asyncio.CancelledError:
+        # Allow Home Assistant to shut down cleanly if the task is cancelled
+        raise
+
+    except Exception:  # noqa: BLE001
+        # Setup failed
+        return False
 
     return True
