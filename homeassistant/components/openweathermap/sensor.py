@@ -254,6 +254,9 @@ async def async_setup_entry(
             for description in WEATHER_SENSOR_TYPES
         )
 
+        # ------------------------------- inf edit ------------------------------- #
+        async_add_entities([OWMNationalWeatherAlerts(unique_id, coordinator)])
+
 
 class AbstractOpenWeatherMapSensor(SensorEntity):
     """Abstract class for an OpenWeatherMap sensor."""
@@ -302,3 +305,31 @@ class OpenWeatherMapSensor(AbstractOpenWeatherMapSensor):
     def native_value(self) -> StateType:
         """Return the state of the device."""
         return self._coordinator.data[ATTR_API_CURRENT].get(self.entity_description.key)
+
+
+# -------------------------------- inf edit -------------------------------- #
+
+
+class OWMNationalWeatherAlerts(SensorEntity):
+    """A placeholder test sensor for OpenWeatherMap."""
+
+    def __init__(
+        self,
+        unique_id: str,
+        coordinator: OWMUpdateCoordinator,
+    ) -> None:
+        """Initialize the sensor."""
+        self._coordinator = coordinator
+
+        self._attr_name = "OpenWeatherMap National Weather Alerts"
+        self._attr_unique_id = f"{unique_id}_nwa"
+        self._attr_icon = "mdi:weather-cloudy"
+
+    @property
+    def native_value(self) -> StateType:
+        """Return static or test value for now."""
+        print("-" * 40)
+        print(self._coordinator.data)
+        print("-" * 40)
+        return self._coordinator.data["current"].get("temperature")
+        # return self._coordinator.data["alerts"].get("alerts.sender_name")
