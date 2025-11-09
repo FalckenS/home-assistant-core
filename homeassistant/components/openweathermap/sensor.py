@@ -370,6 +370,19 @@ class OWMNationalWeatherAlerts(SensorEntity):
         """Return alert info or 'N/A' if inactive."""
         alerts = self._coordinator.data.get("alerts")
 
+        # this is for testing the sensor with some fake data
+        # if not self._coordinator.data.get("alerts"):
+        #     self._coordinator.data["alerts"] = [
+        #         {
+        #             "sender_name": "National Weather Service",
+        #             "event": "Flood Warning",
+        #             "start": 1731154800,
+        #             "end": 1731187200,
+        #             "description": "Flooding expected near rivers and low-lying areas.",
+        #             "tags": ["Flood", "Warning"],
+        #         }
+        #     ]
+
         # if there is no alerts value in the api resonse we just return N/A.
         if not alerts:
             return "N/A"
