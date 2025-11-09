@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -60,6 +62,39 @@ from .const import (
     OWM_MODE_FREE_FORECAST,
 )
 from .coordinator import OWMUpdateCoordinator
+
+ALERTS_SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
+    SensorEntityDescription(
+        name="OpenWeatherMap Alert Source",
+        key="sender_name",  # alerts.sender_name
+        icon="mdi:source-branch",
+    ),
+    SensorEntityDescription(
+        name="OpenWeatherMap Alert Event",
+        key="event",  # alerts.event
+        icon="mdi:alert-circle-outline",
+    ),
+    SensorEntityDescription(
+        name="OpenWeatherMap Alert From",
+        key="start",  # alerts.start
+        icon="mdi:calendar-clock",
+    ),
+    SensorEntityDescription(
+        name="OpenWeatherMap Alert To",
+        key="end",  # alerts.end
+        icon="mdi:calendar-clock",
+    ),
+    SensorEntityDescription(
+        name="OpenWeatherMap Alert Description",
+        key="description",  # alerts.description
+        icon="mdi:information-outline",
+    ),
+    SensorEntityDescription(
+        name="OpenWeatherMap Alert Type",
+        key="tags",  # alerts.tags
+        icon="mdi:tag-outline",
+    ),
+)
 
 WEATHER_SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
@@ -254,8 +289,14 @@ async def async_setup_entry(
             for description in WEATHER_SENSOR_TYPES
         )
 
-        # ------------------------------- inf edit ------------------------------- #
-        async_add_entities([OWMNationalWeatherAlerts(unique_id, coordinator)])
+        async_add_entities(
+            OWMNationalWeatherAlerts(
+                unique_id,
+                description,
+                coordinator,
+            )
+            for description in ALERTS_SENSOR_TYPES
+        )
 
 
 class AbstractOpenWeatherMapSensor(SensorEntity):
@@ -307,29 +348,44 @@ class OpenWeatherMapSensor(AbstractOpenWeatherMapSensor):
         return self._coordinator.data[ATTR_API_CURRENT].get(self.entity_description.key)
 
 
-# -------------------------------- inf edit -------------------------------- #
-
-
 class OWMNationalWeatherAlerts(SensorEntity):
-    """A placeholder test sensor for OpenWeatherMap."""
+    """Implementation of an OpenWeatherMap alert sensor."""
 
     def __init__(
         self,
         unique_id: str,
+        description: SensorEntityDescription,
         coordinator: OWMUpdateCoordinator,
     ) -> None:
         """Initialize the sensor."""
+        self.entity_description = description
         self._coordinator = coordinator
 
-        self._attr_name = "OpenWeatherMap National Weather Alerts"
-        self._attr_unique_id = f"{unique_id}_nwa"
-        self._attr_icon = "mdi:weather-cloudy"
+        self._attr_name = f"{description.name}"
+        self._attr_unique_id = f"{unique_id}-nwa-{description.key}"
+        self._attr_icon = f"{description.icon}"
 
     @property
     def native_value(self) -> StateType:
-        """Return static or test value for now."""
-        print("-" * 40)
-        print(self._coordinator.data)
-        print("-" * 40)
-        return self._coordinator.data["current"].get("temperature")
-        # return self._coordinator.data["alerts"].get("alerts.sender_name")
+        """Return alert info or 'N/A' if inactive."""
+        alerts = self._coordinator.data.get("alerts")
+
+        # if there is no alerts value in the api resonse we just return N/A.
+        if not alerts:
+            return "N/A"
+
+        # alerts[0] = we only handle 1 alert for now
+        value = alerts[0].get(self.entity_description.key, "N/A")
+
+        # convert timestamps (start/end) to human-readable
+        # this allows either int or float values from the api
+        if self.entity_description.key in ("start", "end") and isinstance(
+            value, (int, float)
+        ):
+            value = datetime.fromtimestamp(value).strftime("%Y-%m-%d %H:%M")
+
+        # concat tags if multiple
+        if self.entity_description.key == "tags" and isinstance(value, list):
+            value = ", ".join(value)
+
+        return value
