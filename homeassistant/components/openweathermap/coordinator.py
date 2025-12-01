@@ -127,6 +127,9 @@ class WeatherUpdateCoordinator(OWMUpdateCoordinator):
             else {}
         )
 
+        # For testing
+        alerts = getattr(weather_report, "alerts", [])
+
         return {
             ATTR_API_CURRENT: current_weather,
             ATTR_API_MINUTE_FORECAST: (
@@ -142,6 +145,7 @@ class WeatherUpdateCoordinator(OWMUpdateCoordinator):
                 self._get_daily_forecast_weather_data(item)
                 for item in weather_report.daily_forecast
             ],
+            "alerts": getattr(weather_report, "alerts", []),
         }
 
     def _get_minute_weather_data(
