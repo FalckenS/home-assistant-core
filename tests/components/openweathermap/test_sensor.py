@@ -59,7 +59,18 @@ async def test_alert_sensor_values(
     owm_client_mock: MagicMock,
     mode: str,
 ) -> None:
-    """Test weather alert sensor values are correctly populated (basically tests OWMNationalWeatherAlerts.native_value)."""
+    """Test weather alert sensor values are correctly populated.
+
+    This test ensures that the OWMNationalWeatherAlerts entity processes alert
+    data from the mocked OWM client and the correct sensor values after
+    the platform is set up.
+
+    It validates sender_name, event, start, end, description, and tags
+    from the alert data. As an example of this sender_name checked through 'sensor.openweathermap_alert_source'.
+
+    The test injects a mock alert into `owm_client_mock.get_weather.return_value.alerts`
+    and verifies the HomeAssistant sensor states.
+    """
     # Access the pre-configured mock return value from the fixture
     weather_report = owm_client_mock.get_weather.return_value
 
@@ -80,17 +91,17 @@ async def test_alert_sensor_values(
 
     # Test SensorEntityStates:
 
-    # 1. Check 'sender_name' (Alert Source)
+    # Check 'sender_name' (Alert Source)
     state = hass.states.get("sensor.openweathermap_alert_source")
     assert state is not None
     assert state.state == "National Weather Service"
 
-    # 2. Check 'event' (Alert Event)
+    # Check 'event' (Alert Event)
     state = hass.states.get("sensor.openweathermap_alert_event")
     assert state is not None
     assert state.state == "Flood Warning"
 
-    # 3. Check 'start' (Alert From) - timestamp conversion
+    # Check 'start' (Alert From) - timestamp conversion
     state = hass.states.get("sensor.openweathermap_alert_from")
     assert state is not None
     assert state.state != "N/A"
@@ -98,19 +109,19 @@ async def test_alert_sensor_values(
     assert ":" in state.state
     assert "-" in state.state
 
-    # 4. Check 'end' (Alert To) - timestamp conversion
+    # Check 'end' (Alert To) - timestamp conversion
     state = hass.states.get("sensor.openweathermap_alert_to")
     assert state is not None
     assert state.state != "N/A"
     assert ":" in state.state
     assert "-" in state.state
 
-    # 5. Check 'description' (Alert Description)
+    # Check 'description' (Alert Description)
     state = hass.states.get("sensor.openweathermap_alert_description")
     assert state is not None
     assert state.state == "Flooding expected near rivers and low-lying areas."
 
-    # 6. Check 'tags' (Alert Type) - list joining
+    # Check 'tags' (Alert Type) - list joining
     state = hass.states.get("sensor.openweathermap_alert_type")
     assert state is not None
     assert state.state == "Flood, Warning"

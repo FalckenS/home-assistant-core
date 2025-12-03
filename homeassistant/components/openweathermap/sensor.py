@@ -349,7 +349,15 @@ class OpenWeatherMapSensor(AbstractOpenWeatherMapSensor):
 
 
 class OWMNationalWeatherAlerts(SensorEntity):
-    """Implementation of an OpenWeatherMap alert sensor."""
+    """Implementation of an OpenWeatherMap alert sensor.
+
+    This class reads alert information from the OWMUpdateCoordinator
+    and exposes alert fields for example sender, event, start time,
+    as individual sensor values. As of this implementation only one alert is handled.
+
+    As we can not garantee that there is always an alert present, you can mock an alert
+    through an insertion in the coordinator data.
+    """
 
     def __init__(
         self,
@@ -357,7 +365,13 @@ class OWMNationalWeatherAlerts(SensorEntity):
         description: SensorEntityDescription,
         coordinator: OWMUpdateCoordinator,
     ) -> None:
-        """Initialize the sensor."""
+        """Initialize the sensor.
+
+        Parameters:
+            unique_id: Base unique ID for sensor.
+            description: Entity description that defines which alert field.
+            coordinator: Data update coordinator providing OWM alert data.
+        """
         self.entity_description = description
         self._coordinator = coordinator
 
@@ -367,10 +381,26 @@ class OWMNationalWeatherAlerts(SensorEntity):
 
     @property
     def native_value(self) -> StateType:
-        """Return alert info or 'N/A' if inactive."""
+        """Return alert info.
+
+        Return the sensor value basied on the current weather alert.
+
+        Behavior:
+            - If no alert data is available, return N/A.
+            - Otherwise extract the value from this sensor's
+              description key from the first alert entry.
+            - Converts UNIX timestamps (`start`, `end`) to a formatted
+              `YYYY-MM-DD HH:MM` string.
+            - Joins alert `tags` to one string seperated by a comma.
+
+        Returns:
+            The formatted alert field value or N/A if the field is
+            missing or alerts are not present.
+        """
         alerts = self._coordinator.data.get("alerts")
 
         # this is for testing the sensor with some fake data
+
         # if not self._coordinator.data.get("alerts"):
         #     self._coordinator.data["alerts"] = [
         #         {
