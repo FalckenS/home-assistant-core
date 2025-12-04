@@ -11,14 +11,22 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, CONF_LANGUAGE, CONF_MODE
 from homeassistant.core import HomeAssistant
 
-from .const import CONFIG_FLOW_VERSION, DEFAULT_OWM_MODE, OWM_MODES, PLATFORMS
+from .const import (
+    CONFIG_FLOW_VERSION,
+    DEFAULT_OWM_MODE,
+    OWM_MODE_V30,
+    OWM_MODES,
+    PLATFORMS,
+)
 from .coordinator import OWMUpdateCoordinator, get_owm_update_coordinator
+from .map_view import register_map_view
 from .repairs import async_create_issue, async_delete_issue
 from .utils import build_data_and_options
 
 _LOGGER = logging.getLogger(__name__)
 
-type OpenweathermapConfigEntry = ConfigEntry[OpenweathermapData]
+
+type OpenweathermapConfigEntry = ConfigEntry["OpenweathermapData"]
 
 
 @dataclass
@@ -43,7 +51,8 @@ async def async_setup_entry(
         async_delete_issue(hass, entry.entry_id)
 
     owm_client = create_owm_client(api_key, mode, lang=language)
-    owm_coordinator = get_owm_update_coordinator(mode)(hass, entry, owm_client)
+    coordinator_cls = get_owm_update_coordinator(mode)
+    owm_coordinator = coordinator_cls(hass, entry, owm_client)
 
     await owm_coordinator.async_config_entry_first_refresh()
 
@@ -52,6 +61,9 @@ async def async_setup_entry(
     entry.runtime_data = OpenweathermapData(mode, owm_coordinator)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    if mode == OWM_MODE_V30:
+        register_map_view(hass)
 
     return True
 
@@ -67,7 +79,7 @@ async def async_migrate_entry(
 
     _LOGGER.debug("Migrating OpenWeatherMap entry from version %s", version)
 
-    if version < 5:
+    if version < CONFIG_FLOW_VERSION:
         combined_data = {**data, **options, CONF_MODE: DEFAULT_OWM_MODE}
         new_data, new_options = build_data_and_options(combined_data)
         config_entries.async_update_entry(
@@ -85,7 +97,7 @@ async def async_migrate_entry(
 async def async_update_options(
     hass: HomeAssistant, entry: OpenweathermapConfigEntry
 ) -> None:
-    """Update options."""
+    """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
 

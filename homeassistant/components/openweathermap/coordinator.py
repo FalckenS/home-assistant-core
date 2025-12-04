@@ -6,6 +6,7 @@ from datetime import timedelta
 import logging
 from typing import TYPE_CHECKING, Any
 
+from aiohttp import ClientError
 from pyopenweathermap import (
     CurrentAirPollution,
     CurrentWeather,
@@ -22,9 +23,10 @@ from homeassistant.components.weather import (
     ATTR_CONDITION_SUNNY,
     Forecast,
 )
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE
+from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import sun
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
@@ -115,10 +117,47 @@ class WeatherUpdateCoordinator(OWMUpdateCoordinator):
             )
         except RequestError as error:
             raise UpdateFailed(error) from error
+
+        alerts_json: list[dict[str, Any]] = []
+        try:
+            session = async_get_clientsession(self.hass)
+            api_key = self.config_entry.data[CONF_API_KEY]
+
+            params = {
+                "lat": self._latitude,
+                "lon": self._longitude,
+                "appid": api_key,
+            }
+
+            resp = await session.get(
+                "https://api.openweathermap.org/data/3.0/onecall",
+                params=params,
+                timeout=10,
+            )
+            if resp.status != 200:
+                _LOGGER.warning(
+                    "OWM alerts fetch: HTTP %s when calling One Call 3.0", resp.status
+                )
+            else:
+                payload = await resp.json()
+                alerts_json = payload.get("alerts") or []
+                _LOGGER.warning(
+                    "OWM alerts fetch: got %d alerts from One Call 3.0",
+                    len(alerts_json),
+                )
+        except (TimeoutError, ClientError) as err:
+            _LOGGER.warning("OWM alerts fetch failed: %s", err)
+
+        if alerts_json:
+            setattr(weather_report, "alerts", alerts_json)
+            _LOGGER.warning(
+                "OWM coordinator: attached %d alert(s) to WeatherReport",
+                len(alerts_json),
+            )
+
         return self._convert_weather_response(weather_report)
 
     def _convert_weather_response(self, weather_report: WeatherReport):
-        """Format the weather response correctly."""
         _LOGGER.debug("OWM weather response: %s", weather_report)
 
         current_weather = (
@@ -127,8 +166,50 @@ class WeatherUpdateCoordinator(OWMUpdateCoordinator):
             else {}
         )
 
-        # For testing
-        alerts = getattr(weather_report, "alerts", [])
+        alerts_data: list[dict[str, Any]] = []
+        raw_alerts = getattr(weather_report, "alerts", None) or []
+
+        if not raw_alerts:
+            _LOGGER.warning("OWM coordinator: no alerts in WeatherReport.alerts")
+        else:
+            _LOGGER.warning(
+                "OWM coordinator: %d alert(s) in WeatherReport.alerts before normalization",
+                len(raw_alerts),
+            )
+
+        for idx, alert in enumerate(raw_alerts):
+            if isinstance(alert, dict):
+                sender_name = alert.get("sender_name")
+                event = alert.get("event")
+                start = alert.get("start")
+                end = alert.get("end")
+                description = alert.get("description")
+                tags = alert.get("tags")
+            else:
+                sender_name = getattr(alert, "sender_name", None)
+                event = getattr(alert, "event", None)
+                start = getattr(alert, "start", None)
+                end = getattr(alert, "end", None)
+                description = getattr(alert, "description", None)
+                tags = getattr(alert, "tags", None)
+
+            _LOGGER.warning(
+                "OWM coordinator: alert %d normalized -> event=%r, tags=%r",
+                idx,
+                event,
+                tags,
+            )
+
+            alerts_data.append(
+                {
+                    "sender_name": sender_name,
+                    "event": event,
+                    "start": start,
+                    "end": end,
+                    "description": description,
+                    "tags": tags,
+                }
+            )
 
         return {
             ATTR_API_CURRENT: current_weather,
@@ -145,7 +226,7 @@ class WeatherUpdateCoordinator(OWMUpdateCoordinator):
                 self._get_daily_forecast_weather_data(item)
                 for item in weather_report.daily_forecast
             ],
-            "alerts": getattr(weather_report, "alerts", []),
+            "alerts": alerts_data,
         }
 
     def _get_minute_weather_data(
