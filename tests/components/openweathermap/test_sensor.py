@@ -1,6 +1,8 @@
 """Tests for OpenWeatherMap sensors."""
 
 from unittest.mock import MagicMock
+from tests.test_util.aiohttp import AiohttpClientMocker
+from homeassistant.setup import async_setup_component
 
 import pytest
 from syrupy.assertion import SnapshotAssertion
@@ -29,9 +31,16 @@ async def test_sensor_states(
     entity_registry: er.EntityRegistry,
     mock_config_entry: MockConfigEntry,
     owm_client_mock: MagicMock,
+    aioclient_mock: AiohttpClientMocker,
     mode: str,
 ) -> None:
     """Test sensor states are correctly collected from library with different modes and mocked function responses."""
+
+    # MOCK the API call to prevent the real request
+    aioclient_mock.get("https://api.openweathermap.org/data/3.0/onecall", text="{}")
+
+    # Ensure 'http' component is loaded so hass.http is not None
+    await async_setup_component(hass, "http", {})
 
     await setup_platform(hass, mock_config_entry, [Platform.SENSOR])
     await snapshot_platform(hass, entity_registry, snapshot, mock_config_entry.entry_id)
@@ -44,9 +53,16 @@ async def test_mode_no_sensor(
     entity_registry: er.EntityRegistry,
     mock_config_entry: MockConfigEntry,
     owm_client_mock: MagicMock,
+    aioclient_mock: AiohttpClientMocker,
     mode: str,
 ) -> None:
     """Test modes that do not provide any sensor."""
+
+    # MOCK the API call to prevent the real request
+    aioclient_mock.get("https://api.openweathermap.org/data/3.0/onecall", text="{}")
+
+    # Ensure 'http' component is loaded so hass.http is not None
+    await async_setup_component(hass, "http", {})
 
     await setup_platform(hass, mock_config_entry, [Platform.SENSOR])
     assert len(entity_registry.entities) == 0
@@ -57,6 +73,7 @@ async def test_alert_sensor_values(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
     owm_client_mock: MagicMock,
+    aioclient_mock: AiohttpClientMocker,
     mode: str,
 ) -> None:
     """Test weather alert sensor values are correctly populated.
@@ -86,6 +103,12 @@ async def test_alert_sensor_values(
         }
     ]
 
+    # MOCK the API call to prevent the real request
+    aioclient_mock.get("https://api.openweathermap.org/data/3.0/onecall", text="{}")
+
+    # Ensure 'http' component is loaded so hass.http is not None
+    await async_setup_component(hass, "http", {})
+
     # Set up the platform
     await setup_platform(hass, mock_config_entry, [Platform.SENSOR])
 
@@ -104,17 +127,12 @@ async def test_alert_sensor_values(
     # Check 'start' (Alert From) - timestamp conversion
     state = hass.states.get("sensor.openweathermap_alert_from")
     assert state is not None
-    assert state.state != "N/A"
-    # Verifies it was converted from int to string with date parts
-    assert ":" in state.state
-    assert "-" in state.state
+    assert state.state == "2024-11-09 12:20"
 
     # Check 'end' (Alert To) - timestamp conversion
     state = hass.states.get("sensor.openweathermap_alert_to")
     assert state is not None
-    assert state.state != "N/A"
-    assert ":" in state.state
-    assert "-" in state.state
+    assert state.state == "2024-11-09 21:20"
 
     # Check 'description' (Alert Description)
     state = hass.states.get("sensor.openweathermap_alert_description")
