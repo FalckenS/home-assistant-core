@@ -430,6 +430,300 @@
     'state': '0.59',
   })
 # ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_description-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_description',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:information-outline',
+    'original_name': 'OpenWeatherMap Alert Description',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-description',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_description-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert Description',
+      'icon': 'mdi:information-outline',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_description',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_event-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_event',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:alert-circle-outline',
+    'original_name': 'OpenWeatherMap Alert Event',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-event',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_event-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert Event',
+      'icon': 'mdi:alert-circle-outline',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_event',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_from-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_from',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:calendar-clock',
+    'original_name': 'OpenWeatherMap Alert From',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-start',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_from-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert From',
+      'icon': 'mdi:calendar-clock',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_from',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_source-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_source',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:source-branch',
+    'original_name': 'OpenWeatherMap Alert Source',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-sender_name',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_source-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert Source',
+      'icon': 'mdi:source-branch',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_source',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_to-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_to',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:calendar-clock',
+    'original_name': 'OpenWeatherMap Alert To',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-end',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_to-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert To',
+      'icon': 'mdi:calendar-clock',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_to',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_type-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_type',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:tag-outline',
+    'original_name': 'OpenWeatherMap Alert Type',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-tags',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[current][sensor.openweathermap_alert_type-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert Type',
+      'icon': 'mdi:tag-outline',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_type',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
 # name: test_sensor_states[current][sensor.openweathermap_apparent_temperature-entry]
   EntityRegistryEntrySnapshot({
     'aliases': set({
@@ -1357,6 +1651,300 @@
     'last_reported': <ANY>,
     'last_updated': <ANY>,
     'state': '35.388',
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_description-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_description',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:information-outline',
+    'original_name': 'OpenWeatherMap Alert Description',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-description',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_description-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert Description',
+      'icon': 'mdi:information-outline',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_description',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_event-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_event',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:alert-circle-outline',
+    'original_name': 'OpenWeatherMap Alert Event',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-event',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_event-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert Event',
+      'icon': 'mdi:alert-circle-outline',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_event',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_from-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_from',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:calendar-clock',
+    'original_name': 'OpenWeatherMap Alert From',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-start',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_from-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert From',
+      'icon': 'mdi:calendar-clock',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_from',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_source-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_source',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:source-branch',
+    'original_name': 'OpenWeatherMap Alert Source',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-sender_name',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_source-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert Source',
+      'icon': 'mdi:source-branch',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_source',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_to-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_to',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:calendar-clock',
+    'original_name': 'OpenWeatherMap Alert To',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-end',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_to-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert To',
+      'icon': 'mdi:calendar-clock',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_to',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_type-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': set({
+    }),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.openweathermap_alert_type',
+    'has_entity_name': False,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': 'mdi:tag-outline',
+    'original_name': 'OpenWeatherMap Alert Type',
+    'platform': 'openweathermap',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '12.34-56.78-nwa-tags',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_sensor_states[v3.0][sensor.openweathermap_alert_type-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'friendly_name': 'OpenWeatherMap Alert Type',
+      'icon': 'mdi:tag-outline',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.openweathermap_alert_type',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'N/A',
   })
 # ---
 # name: test_sensor_states[v3.0][sensor.openweathermap_apparent_temperature-entry]
