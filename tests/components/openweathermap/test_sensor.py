@@ -1,8 +1,6 @@
 """Tests for OpenWeatherMap sensors."""
 
 from unittest.mock import MagicMock
-from tests.test_util.aiohttp import AiohttpClientMocker
-from homeassistant.setup import async_setup_component
 
 import pytest
 from syrupy.assertion import SnapshotAssertion
@@ -16,10 +14,12 @@ from homeassistant.components.openweathermap.const import (
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+from homeassistant.setup import async_setup_component
 
 from . import setup_platform
 
 from tests.common import MockConfigEntry, snapshot_platform
+from tests.test_util.aiohttp import AiohttpClientMocker
 
 
 @pytest.mark.parametrize(
