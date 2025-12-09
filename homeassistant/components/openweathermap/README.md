@@ -6,7 +6,7 @@ Team 2 from Chalmers university in course DAT266 Software evolution project:
 - Added tests for the custom web card.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Usage:**
-An API key from Openweathermap is required to run the integration extension, (You can sign up for a free API key `at <https://home.openweathermap.org/users/sign_up>`__.). **NOTE:** the key requires both 2.0 and 3.0 access.
+An API key from Openweathermap is required to run the integration extension, (You can sign up for a free API key at https://home.openweathermap.org/users/sign_up) **NOTE:** the key requires both One Call API 3.0 and Weather maps 2.0 access.
 
 The alert sensor card will be displayed automatically once the integration is active, however bare in mind that it will only display an alert if one is currently active (which is unlikely). A mock alert can be activated by uncommenting the lines 404-414 in the sensor.py file.
 
