@@ -1,17 +1,25 @@
 """Define tests for the OpenWeatherMap config flow."""
 
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 from pyopenweathermap import RequestError
 import pytest
 
 from homeassistant.components.openweathermap.const import (
+    ATTR_API_CURRENT,
     DEFAULT_LANGUAGE,
     DEFAULT_NAME,
     DEFAULT_OWM_MODE,
     DOMAIN,
+    OWM_MODE_AIRPOLLUTION,
     OWM_MODE_V30,
+    WEATHER_CODE_SUNNY_OR_CLEAR_NIGHT,
 )
+from homeassistant.components.openweathermap.coordinator import (
+    AirPollutionUpdateCoordinator,
+    WeatherUpdateCoordinator,
+)
+from homeassistant.components.weather import ATTR_CONDITION_SUNNY
 from homeassistant.config_entries import SOURCE_USER, ConfigEntryState
 from homeassistant.const import (
     CONF_API_KEY,
@@ -50,7 +58,7 @@ async def test_successful_config_flow(
     hass: HomeAssistant,
     owm_client_mock: AsyncMock,
 ) -> None:
-    """Test that the form is served with valid input."""
+    """Test successful config flow and that the created entry loads and unloads."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": SOURCE_USER}
     )
@@ -87,7 +95,7 @@ async def test_abort_config_flow(
     owm_client_mock: AsyncMock,
     mock_config_entry: MockConfigEntry,
 ) -> None:
-    """Test that the form is served with same data."""
+    """Test we abort the flow when a config entry already exists."""
     mock_config_entry.add_to_hass(hass)
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": SOURCE_USER}
@@ -107,7 +115,7 @@ async def test_config_flow_options_change(
     hass: HomeAssistant,
     owm_client_mock: AsyncMock,
 ) -> None:
-    """Test that the options form."""
+    """Test changing options via the options flow."""
     config_entry = MockConfigEntry(
         domain=DOMAIN, unique_id="openweathermap_unique_id", data=CONFIG
     )
@@ -164,7 +172,7 @@ async def test_form_invalid_api_key(
     hass: HomeAssistant,
     owm_client_mock: AsyncMock,
 ) -> None:
-    """Test that the form is served with no input."""
+    """Test handling of invalid API key in the config flow."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": SOURCE_USER}
     )
@@ -192,7 +200,7 @@ async def test_form_api_call_error(
     hass: HomeAssistant,
     owm_client_mock: AsyncMock,
 ) -> None:
-    """Test setting up with api call error."""
+    """Test handling of errors when validating the API key."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": SOURCE_USER}
     )
@@ -213,3 +221,105 @@ async def test_form_api_call_error(
         USER_INPUT,
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
+
+
+@pytest.mark.parametrize("mode", [OWM_MODE_AIRPOLLUTION], indirect=True)
+async def test_air_pollution_coordinator_no_current(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    owm_client_mock,
+    mode,
+) -> None:
+    """Test air pollution coordinator when report has no current field."""
+
+    class FakeAirPollutionReport:
+        def __init__(self) -> None:
+            self.current = None  # triggers the `else {}` branch
+
+    # Make the OWM client return a report with current=None
+    owm_client_mock.get_air_pollution.return_value = FakeAirPollutionReport()
+
+    coordinator = AirPollutionUpdateCoordinator(
+        hass, mock_config_entry, owm_client_mock
+    )
+
+    data = await coordinator._async_update_data()
+
+    # When current is None, coordinator should return an empty dict for "current"
+    assert data[ATTR_API_CURRENT] == {}
+
+
+@pytest.mark.parametrize("mode", [OWM_MODE_V30], indirect=True)
+async def test_get_condition_sunny_with_timestamp(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    owm_client_mock,
+    mode: str,
+) -> None:
+    """Test _get_condition sunny branch when a timestamp is provided."""
+    coordinator = WeatherUpdateCoordinator(hass, mock_config_entry, owm_client_mock)
+    ts = 1_700_000_000  # any non-zero timestamp so `if timestamp:` is truthy
+
+    with (
+        patch(
+            "homeassistant.components.openweathermap.coordinator.dt_util.utc_from_timestamp",
+            return_value="converted-time",
+        ) as mock_utc,
+        patch(
+            "homeassistant.components.openweathermap.coordinator.sun.is_up",
+            return_value=True,
+        ) as mock_is_up,
+    ):
+        condition = coordinator._get_condition(
+            WEATHER_CODE_SUNNY_OR_CLEAR_NIGHT,
+            ts,
+        )
+
+    # We hit the SUNNY branch when sun.is_up(...) is True
+    assert condition == ATTR_CONDITION_SUNNY
+
+    # Ensure the timestamp path was actually used
+    mock_utc.assert_called_once_with(ts)
+    mock_is_up.assert_called_once_with(hass, "converted-time")
+
+
+def test_convert_weather_response_object_alerts(hass: HomeAssistant) -> None:
+    """Test _convert_weather_response normalizes object-style alerts."""
+    # Create a coordinator instance without running its full __init__
+    coordinator = WeatherUpdateCoordinator.__new__(WeatherUpdateCoordinator)
+    coordinator.hass = hass  # not actually used in this path, but harmless
+
+    class FakeAlert:
+        def __init__(self) -> None:
+            self.sender_name = "MET"
+            self.event = "Storm Warning"
+            self.start = 1111111111
+            self.end = 2222222222
+            self.description = "Very windy"
+            self.tags = ["Wind", "Warning"]
+
+    class FakeWeatherReport:
+        def __init__(self) -> None:
+            # Force current/minutely to skip any deeper processing
+            self.current = None
+            self.minutely_forecast = None
+            self.hourly_forecast = []
+            self.daily_forecast = []
+            # Here is the important part: a list with a *non-dict* alert object
+            self.alerts = [FakeAlert()]
+
+    weather_report = FakeWeatherReport()
+
+    result = coordinator._convert_weather_response(weather_report)
+
+    # We only care that the alert was normalized using getattr(...)
+    assert result["alerts"] == [
+        {
+            "sender_name": "MET",
+            "event": "Storm Warning",
+            "start": 1111111111,
+            "end": 2222222222,
+            "description": "Very windy",
+            "tags": ["Wind", "Warning"],
+        }
+    ]

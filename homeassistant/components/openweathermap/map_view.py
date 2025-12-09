@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import logging
 from typing import Any
 
 from aiohttp import web
@@ -13,9 +12,6 @@ from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CON
 from homeassistant.core import HomeAssistant
 
 from .const import DEFAULT_OWM_MODE, DOMAIN, OWM_MODE_V30
-
-_LOGGER = logging.getLogger(__name__)
-
 
 ALERT_KEYWORD_TO_LAYERS: dict[str, list[str]] = {
     # wind warnings.
@@ -73,7 +69,6 @@ MAP_HTML_TEMPLATE = """<!DOCTYPE html>
 
     // List of active layer codes from the backend, e.g. ["WND","PR0"]
     const ACTIVE_LAYERS = {active_layers};
-    console.log("OWM map active layers:", ACTIVE_LAYERS);
 
     const map = L.map("map").setView(CENTER, 8);
 
@@ -239,11 +234,9 @@ class OWMMapView(HomeAssistantView):
         runtime_data = entry.runtime_data
         coordinator = runtime_data.coordinator
         alerts: list[dict[str, Any]] = coordinator.data.get("alerts", []) or []
-        _LOGGER.warning("OWM map alerts: %s", alerts)
 
         active_layers = _layers_for_alerts(alerts)
         active_layers_json = json.dumps(active_layers)
-        _LOGGER.warning("OWM map active_layers: %s", active_layers)
 
         html = MAP_HTML_TEMPLATE.format(
             lat=lat,

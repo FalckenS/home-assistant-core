@@ -6,7 +6,7 @@ from datetime import timedelta
 import logging
 from typing import TYPE_CHECKING, Any
 
-from aiohttp import ClientError
+from aiohttp import ClientTimeout
 from pyopenweathermap import (
     CurrentAirPollution,
     CurrentWeather,
@@ -113,39 +113,17 @@ class WeatherUpdateCoordinator(OWMUpdateCoordinator):
         """Update the data."""
         try:
             weather_report = await self._owm_client.get_weather(
-                self._latitude, self._longitude
+                self._latitude,
+                self._longitude,
             )
         except RequestError as error:
             raise UpdateFailed(error) from error
 
         alerts_json: list[dict[str, Any]] = []
+
         try:
-            session = async_get_clientsession(self.hass)
-            api_key = self.config_entry.data[CONF_API_KEY]
-
-            params = {
-                "lat": self._latitude,
-                "lon": self._longitude,
-                "appid": api_key,
-            }
-
-            resp = await session.get(
-                "https://api.openweathermap.org/data/3.0/onecall",
-                params=params,
-                timeout=10,
-            )
-            if resp.status != 200:
-                _LOGGER.warning(
-                    "OWM alerts fetch: HTTP %s when calling One Call 3.0", resp.status
-                )
-            else:
-                payload = await resp.json()
-                alerts_json = payload.get("alerts") or []
-                _LOGGER.warning(
-                    "OWM alerts fetch: got %d alerts from One Call 3.0",
-                    len(alerts_json),
-                )
-        except (TimeoutError, ClientError) as err:
+            alerts_json = await self._async_fetch_alerts()
+        except Exception as err:  # noqa: BLE001 – we really don't want alerts to kill the update
             _LOGGER.warning("OWM alerts fetch failed: %s", err)
 
         if alerts_json:
@@ -156,6 +134,44 @@ class WeatherUpdateCoordinator(OWMUpdateCoordinator):
             )
 
         return self._convert_weather_response(weather_report)
+
+    async def _async_fetch_alerts(self) -> list[dict[str, Any]]:
+        """Fetch weather alerts from the OpenWeatherMap One Call 3.0 API.
+
+        Any exception here is meant to be caught by _async_update_data, so this
+        method should let errors propagate instead of catching them itself.
+        """
+        session = async_get_clientsession(self.hass)
+        api_key = self.config_entry.data[CONF_API_KEY]
+
+        params = {
+            "lat": self._latitude,
+            "lon": self._longitude,
+            "appid": api_key,
+        }
+
+        resp = await session.get(
+            "https://api.openweathermap.org/data/3.0/onecall",
+            params=params,
+            timeout=ClientTimeout(total=10),
+        )
+
+        if resp.status != 200:
+            _LOGGER.warning(
+                "OWM alerts fetch: HTTP %s when calling One Call 3.0",
+                resp.status,
+            )
+            return []
+
+        payload = await resp.json()
+        alerts_json: list[dict[str, Any]] = payload.get("alerts") or []
+
+        _LOGGER.warning(
+            "OWM alerts fetch: got %d alerts from One Call 3.0",
+            len(alerts_json),
+        )
+
+        return alerts_json
 
     def _convert_weather_response(self, weather_report: WeatherReport):
         _LOGGER.debug("OWM weather response: %s", weather_report)

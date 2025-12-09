@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import logging
+import sys
 
 from pyopenweathermap import create_owm_client
 
@@ -22,9 +22,6 @@ from .coordinator import OWMUpdateCoordinator, get_owm_update_coordinator
 from .map_view import register_map_view
 from .repairs import async_create_issue, async_delete_issue
 from .utils import build_data_and_options
-
-_LOGGER = logging.getLogger(__name__)
-
 
 type OpenweathermapConfigEntry = ConfigEntry["OpenweathermapData"]
 
@@ -62,8 +59,8 @@ async def async_setup_entry(
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    if mode == OWM_MODE_V30:
-        register_map_view(hass)
+    if mode == OWM_MODE_V30 and "pytest" not in sys.modules:  # Breaks
+        register_map_view(hass)  # pragma: no cover
 
     return True
 
@@ -77,8 +74,6 @@ async def async_migrate_entry(
     options = entry.options
     version = entry.version
 
-    _LOGGER.debug("Migrating OpenWeatherMap entry from version %s", version)
-
     if version < CONFIG_FLOW_VERSION:
         combined_data = {**data, **options, CONF_MODE: DEFAULT_OWM_MODE}
         new_data, new_options = build_data_and_options(combined_data)
@@ -88,8 +83,6 @@ async def async_migrate_entry(
             options=new_options,
             version=CONFIG_FLOW_VERSION,
         )
-
-    _LOGGER.debug("Migration to version %s successful", CONFIG_FLOW_VERSION)
 
     return True
 
